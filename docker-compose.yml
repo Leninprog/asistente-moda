@@ -1,0 +1,103 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - gateway
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - IA_URL=http://ia:8001
+      - CATALOGO_URL=http://catalogo:8002
+      - PREFERENCIAS_URL=http://preferencias:8003
+      - NOTIFICACIONES_URL=http://notificaciones:8004
+    depends_on:
+      - ia
+      - catalogo
+      - preferencias
+      - notificaciones
+
+  ia:
+    build: ./services/ia
+    ports:
+      - "8001:8001"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:postgres@db_modelos:5432/modelos
+    depends_on:
+      - redis
+      - db_modelos
+
+  catalogo:
+    build: ./services/catalogo
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db_catalogo:5432/catalogo
+    depends_on:
+      - db_catalogo
+
+  preferencias:
+    build: ./services/preferencias
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db_usuarios:5432/usuarios
+    depends_on:
+      - db_usuarios
+
+  notificaciones:
+    build: ./services/notificaciones
+    ports:
+      - "8004:8004"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  db_modelos:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: modelos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_modelos_data:/var/lib/postgresql/data
+
+  db_catalogo:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: catalogo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_catalogo_data:/var/lib/postgresql/data
+
+  db_usuarios:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: usuarios
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_usuarios_data:/var/lib/postgresql/data
+
+volumes:
+  db_modelos_data:
+  db_catalogo_data:
+  db_usuarios_data:
