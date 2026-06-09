@@ -7,23 +7,20 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
-app.use(express.json());
-
 // Rutas hacia cada microservicio
-app.use(
-  "/api/ia",
-  createProxyMiddleware({
-    target: process.env.IA_URL || "http://ia:8001",
-    changeOrigin: true,
-    pathRewrite: { "^/api/ia": "" },
-  }),
-);
+app.use('/api/ia', createProxyMiddleware({
+  target: process.env.IA_URL || 'http://ia:8001',
+  changeOrigin: true,
+  pathRewrite: { '^/api/ia': '' },
+  proxyTimeout: 60000,
+  timeout: 60000
+}))
 
 app.use(
   "/api/catalogo",

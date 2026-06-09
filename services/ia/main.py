@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import redis
 import os
 import json
@@ -18,8 +19,7 @@ app.add_middleware(
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
 
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=GEMINI_API_KEY)
 r = redis.from_url(REDIS_URL)
 
 class SolicitudOutfit(BaseModel):
@@ -42,7 +42,7 @@ async def recomendar_outfit(solicitud: SolicitudOutfit):
     Eres un asistente experto en moda. El usuario describe su estilo así:
     "{solicitud.descripcion}"
 
-    Responde ÚNICAMENTE con un JSON válido con esta estructura exacta, sin texto adicional:
+    Responde ÚNICAMENTE con un JSON válido con esta estructura exacta, sin texto adicional ni backticks:
     {{
         "ocasion": "descripción breve de la ocasión",
         "prendas": [
@@ -50,7 +50,7 @@ async def recomendar_outfit(solicitud: SolicitudOutfit):
                 "tipo": "tipo de prenda",
                 "descripcion": "descripción detallada",
                 "color": "color principal",
-                "busqueda": "términos de búsqueda para tienda"
+                "busqueda": "terminos de busqueda para tienda"
             }}
         ],
         "justificacion": "por qué este outfit combina bien",
@@ -62,21 +62,37 @@ async def recomendar_outfit(solicitud: SolicitudOutfit):
     """
 
     try:
-        respuesta = model.generate_content(prompt)
-        texto = respuesta.text.strip()
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.7,
+                max_output_tokens=2000,
+            )
+        )
 
-        # Limpiar si Gemini devuelve markdown
-        if texto.startswith("```"):
-            texto = texto.split("```")[1]
-            if texto.startswith("json"):
-                texto = texto[4:]
+        texto = response.text.strip()
+
+        # Limpiar markdown si viene con backticks
+        if "```" in texto:
+            partes = texto.split("```")
+            for parte in partes:
+                if parte.startswith("json"):
+                    texto = parte[4:].strip()
+                    break
+                elif parte.strip().startswith("{"):
+                    texto = parte.strip()
+                    break
+
+        # Asegurarse que el JSON esté completo
+        if not texto.endswith("}"):
+            ultimo_cierre = texto.rfind("}")
+            if ultimo_cierre != -1:
+                texto = texto[:ultimo_cierre+1]
 
         resultado = json.loads(texto)
 
-        # Guardar en caché por 1 hora
         r.setex(cache_key, 3600, json.dumps(resultado))
-
-        # Publicar evento al Event Bus
         r.publish("recomendaciones", json.dumps({
             "usuario_id": solicitud.usuario_id,
             "outfit": resultado
@@ -84,5 +100,7 @@ async def recomendar_outfit(solicitud: SolicitudOutfit):
 
         return resultado
 
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=500, detail=f"Error parseando respuesta de IA: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generando outfit: {str(e)}")

@@ -10,7 +10,7 @@ export default function Buscador({ onBuscar, cargando }) {
   return (
     <div
       style={{
-        background: "white",
+        background: "black",
         borderRadius: "16px",
         padding: "32px",
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
@@ -18,10 +18,10 @@ export default function Buscador({ onBuscar, cargando }) {
         margin: "0 auto",
       }}
     >
-      <h2 style={{ marginBottom: "8px", fontSize: "20px" }}>
+      <h2 style={{ marginBottom: "8px", fontSize: "20px", color: "white" }}>
         ¿Qué estilo buscas hoy?
       </h2>
-      <p style={{ color: "#888", marginBottom: "20px", fontSize: "14px" }}>
+      <p style={{ color: "white", marginBottom: "20px", fontSize: "14px" }}>
         Descríbelo con tus palabras — ocasión, colores, estilo, temporada...
       </p>
       <textarea
@@ -33,11 +33,12 @@ export default function Buscador({ onBuscar, cargando }) {
           width: "100%",
           padding: "14px",
           borderRadius: "10px",
-          border: "1px solid #e0e0e0",
+          color: "black",
           fontSize: "15px",
           resize: "none",
           outline: "none",
           fontFamily: "inherit",
+          background: "white",
         }}
       />
       <button
