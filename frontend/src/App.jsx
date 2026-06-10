@@ -24,16 +24,43 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", padding: "40px 20px" }}>
-      <div style={{ maxWidth: "680px", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "36px" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "60px 20px",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "900px",
+          margin: "0 auto",
+        }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "48px",
+          }}
+        >
           <h1
-            style={{ fontSize: "32px", fontWeight: "800", marginBottom: "8px" }}
+            style={{
+              fontSize: "42px",
+              fontWeight: "800",
+              marginBottom: "12px",
+            }}
           >
             👗 Asistente de Moda
           </h1>
-          <p style={{ color: "#888", fontSize: "16px" }}>
-            Describe tu estilo y te recomendamos el outfit perfecto
+
+          <p
+            style={{
+              fontSize: "18px",
+              maxWidth: "600px",
+              margin: "0 auto",
+            }}
+          >
+            Describe tu estilo, ocasión o preferencias y recibe una propuesta de
+            outfit personalizada.
           </p>
         </div>
 
@@ -42,18 +69,19 @@ export default function App() {
         {cargando && <Cargando />}
 
         {error && (
-          <p
+          <div
             style={{
+              marginTop: "24px",
+              padding: "16px",
+              background: "#fff1f2",
+              border: "1px solid #fecdd3",
+              borderRadius: "12px",
+              color: "#be123c",
               textAlign: "center",
-              color: "#e74c3c",
-              marginTop: "20px",
-              padding: "14px",
-              background: "#ffeaea",
-              borderRadius: "10px",
             }}
           >
             {error}
-          </p>
+          </div>
         )}
 
         {outfit && <OutfitCard outfit={outfit} />}

@@ -3,13 +3,10 @@ export default function OutfitCard({ outfit }) {
 
   return (
     <div
+      className="card fade-in"
       style={{
-        background: "white",
-        borderRadius: "16px",
+        marginTop: "28px",
         padding: "32px",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-        maxWidth: "680px",
-        margin: "24px auto 0",
       }}
     >
       <div
@@ -17,17 +14,28 @@ export default function OutfitCard({ outfit }) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "20px",
+          marginBottom: "28px",
+          flexWrap: "wrap",
+          gap: "12px",
         }}
       >
-        <h3 style={{ fontSize: "18px" }}>Tu outfit recomendado</h3>
+        <h3
+          style={{
+            fontSize: "24px",
+            fontWeight: "700",
+          }}
+        >
+          Tu outfit recomendado
+        </h3>
+
         <span
           style={{
-            background: "#f0f0f0",
-            padding: "4px 12px",
-            borderRadius: "20px",
+            background: "#eef2ff",
+            color: "#4338ca",
+            padding: "8px 14px",
+            borderRadius: "999px",
             fontSize: "13px",
-            color: "#666",
+            fontWeight: "600",
           }}
         >
           {outfit.ocasion}
@@ -40,24 +48,25 @@ export default function OutfitCard({ outfit }) {
             key={i}
             style={{
               display: "flex",
-              alignItems: "center",
-              gap: "14px",
-              padding: "14px",
-              background: "#f9f9f9",
-              borderRadius: "10px",
+              gap: "16px",
+              alignItems: "flex-start",
+              padding: "18px",
+              border: "1px solid #e5e7eb",
+              borderRadius: "14px",
+              background: "#fafafa",
             }}
           >
             <div
               style={{
-                width: "42px",
-                height: "42px",
-                background: "#1a1a2e",
-                borderRadius: "10px",
+                width: "52px",
+                height: "52px",
+                borderRadius: "14px",
+                background: "#111827",
+                color: "white",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "white",
-                fontSize: "18px",
+                fontSize: "22px",
                 flexShrink: 0,
               }}
             >
@@ -78,36 +87,41 @@ export default function OutfitCard({ outfit }) {
               </p>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
-              href=
-              {outfit.links?.zara?.replace(
-                "TERMINO",
-                encodeURIComponent(prenda.busqueda),
-              )}
-              target="_blank" rel="noreferrer" style=
-              {{
-                padding: "6px 12px",
-                background: "#1a1a2e",
-                color: "white",
-                borderRadius: "6px",
-                fontSize: "12px",
-                textDecoration: "none",
-              }}
-              <a>Zara</a>
-              href=
-              {outfit.links?.hm?.replace(
-                "TERMINO",
-                encodeURIComponent(prenda.busqueda),
-              )}
-              target="_blank" rel="noreferrer" style=
-              {{
-                padding: "6px 12px",
-                background: "#e0e0e0",
-                color: "#1a1a2e",
-                borderRadius: "6px",
-                fontSize: "12px",
-                textDecoration: "none",
-              }}
-              <a>H&M</a>
+              <a
+                href={`https://www.zara.com/ec/es/search?searchTerm=${encodeURIComponent(
+                  prenda.busqueda,
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  padding: "8px 14px",
+                  background: "#111827",
+                  color: "white",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                }}
+              >
+                Zara
+              </a>
+
+              <a
+                href={`https://www2.hm.com/es_es/search-results.html?q=${encodeURIComponent(
+                  prenda.busqueda,
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  padding: "8px 14px",
+                  background: "#111827",
+                  color: "white",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                }}
+              >
+                H&M
+              </a>
             </div>
           </div>
         ))}
@@ -116,13 +130,12 @@ export default function OutfitCard({ outfit }) {
       {outfit.justificacion && (
         <p
           style={{
-            marginTop: "20px",
-            padding: "14px",
-            background: "#f0f4ff",
-            borderRadius: "10px",
-            fontSize: "14px",
-            color: "#444",
-            lineHeight: "1.5",
+            marginTop: "24px",
+            padding: "18px",
+            background: "#f8fafc",
+            border: "1px solid #e5e7eb",
+            borderRadius: "14px",
+            lineHeight: "1.7",
           }}
         >
           💡 {outfit.justificacion}

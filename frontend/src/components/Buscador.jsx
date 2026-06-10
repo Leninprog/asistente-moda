@@ -9,56 +9,59 @@ export default function Buscador({ onBuscar, cargando }) {
 
   return (
     <div
+      className="card fade-in"
       style={{
-        background: "black",
-        borderRadius: "16px",
         padding: "32px",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-        maxWidth: "680px",
+        maxWidth: "800px",
         margin: "0 auto",
       }}
     >
-      <h2 style={{ marginBottom: "8px", fontSize: "20px", color: "white" }}>
+      <h2
+        style={{
+          fontSize: "24px",
+          marginBottom: "8px",
+        }}
+      >
         ¿Qué estilo buscas hoy?
       </h2>
-      <p style={{ color: "white", marginBottom: "20px", fontSize: "14px" }}>
-        Descríbelo con tus palabras — ocasión, colores, estilo, temporada...
+
+      <p
+        style={{
+          marginBottom: "20px",
+        }}
+      >
+        Describe ocasión, colores, temporada, estilo o cualquier detalle que
+        tengas en mente.
       </p>
+
       <textarea
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
-        placeholder="Ej: algo casual para salir un sábado, me gustan los colores tierra y el estilo oversized"
-        rows={4}
+        placeholder="Ej: Outfit casual para salir el sábado, colores tierra, estilo oversized..."
+        rows={5}
         style={{
-          width: "100%",
-          padding: "14px",
-          borderRadius: "10px",
-          color: "black",
+          padding: "16px",
           fontSize: "15px",
           resize: "none",
-          outline: "none",
-          fontFamily: "inherit",
-          background: "white",
         }}
       />
+
       <button
         onClick={handleSubmit}
         disabled={cargando || !descripcion.trim()}
         style={{
-          marginTop: "16px",
           width: "100%",
+          marginTop: "18px",
           padding: "14px",
-          background: cargando || !descripcion.trim() ? "#ccc" : "#1a1a2e",
+          borderRadius: "12px",
+          background: cargando || !descripcion.trim() ? "#d1d5db" : "#111827",
           color: "white",
-          border: "none",
-          borderRadius: "10px",
-          fontSize: "16px",
-          cursor: cargando || !descripcion.trim() ? "not-allowed" : "pointer",
           fontWeight: "600",
-          transition: "background 0.2s",
+          fontSize: "15px",
+          transition: "0.2s",
         }}
       >
-        {cargando ? "Generando..." : "Recomendar outfit"}
+        {cargando ? "Generando outfit..." : "Generar recomendación"}
       </button>
     </div>
   );
