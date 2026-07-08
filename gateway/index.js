@@ -27,15 +27,6 @@ app.use('/api/ia', createProxyMiddleware({
 }))
 
 app.use(
-  "/api/catalogo",
-  createProxyMiddleware({
-    target: process.env.CATALOGO_URL || "http://catalogo:8002",
-    changeOrigin: true,
-    pathRewrite: { "^/api/catalogo": "" },
-  }),
-);
-
-app.use(
   "/api/preferencias",
   createProxyMiddleware({
     target: process.env.PREFERENCIAS_URL || "http://preferencias:8003",
