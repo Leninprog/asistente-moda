@@ -22,17 +22,19 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
 client = genai.Client(api_key=GEMINI_API_KEY)
 r = redis.from_url(REDIS_URL)
 
+
 class SolicitudOutfit(BaseModel):
     usuario_id: str
     descripcion: str
+
 
 @app.get("/health")
 def health():
     return {"status": "ok", "servicio": "ia"}
 
+
 @app.post("/recomendar")
 async def recomendar_outfit(solicitud: SolicitudOutfit):
-    # Revisar caché primero
     cache_key = f"outfit:{solicitud.usuario_id}:{solicitud.descripcion}"
     cached = r.get(cache_key)
     if cached:
@@ -67,13 +69,14 @@ async def recomendar_outfit(solicitud: SolicitudOutfit):
             contents=prompt,
             config=types.GenerateContentConfig(
                 temperature=0.7,
-                max_output_tokens=2000,
+                max_output_tokens=4096,
+                response_mime_type="application/json",
+                thinking_config=types.ThinkingConfig(thinking_budget=0),
             )
         )
 
         texto = response.text.strip()
 
-        # Limpiar markdown si viene con backticks
         if "```" in texto:
             partes = texto.split("```")
             for parte in partes:
@@ -83,12 +86,6 @@ async def recomendar_outfit(solicitud: SolicitudOutfit):
                 elif parte.strip().startswith("{"):
                     texto = parte.strip()
                     break
-
-        # Asegurarse que el JSON esté completo
-        if not texto.endswith("}"):
-            ultimo_cierre = texto.rfind("}")
-            if ultimo_cierre != -1:
-                texto = texto[:ultimo_cierre+1]
 
         resultado = json.loads(texto)
 
