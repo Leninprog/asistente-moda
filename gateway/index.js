@@ -29,18 +29,18 @@ app.use('/api/ia', createProxyMiddleware({
 app.use(
   "/api/preferencias",
   createProxyMiddleware({
-    target: process.env.PREFERENCIAS_URL || "http://preferencias:8003",
+    target: process.env.SOPORTE_URL || "http://soporte:8003",
     changeOrigin: true,
-    pathRewrite: { "^/api/preferencias": "" },
+    pathRewrite: { "^/api": "" },
   }),
 );
 
 app.use(
   "/api/notificaciones",
   createProxyMiddleware({
-    target: process.env.NOTIFICACIONES_URL || "http://notificaciones:8004",
+    target: process.env.SOPORTE_URL || "http://soporte:8003",
     changeOrigin: true,
-    pathRewrite: { "^/api/notificaciones": "" },
+    pathRewrite: { "^/api": "" },
   }),
 );
 
